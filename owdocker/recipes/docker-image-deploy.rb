@@ -62,6 +62,7 @@ node[:deploy].each do |application, deploy|
   deploy[:environment_variables].each do |key, value|
     dockerenvs=dockerenvs+" -e "+key+"="+value unless key == "registry_password"
   end
+  dockerenvs=dockerenvs+" -e CLUSTER_ENDPOINT_URL=http://"+node[:opsworks][:instance][:private_ip]
   Chef::Log.info("ENVs: #{dockerenvs}")
 
   hostname = "#{node[:opsworks][:stack][:name]}-#{node[:opsworks][:instance][:hostname]}"
@@ -71,7 +72,7 @@ node[:deploy].each do |application, deploy|
   bash "docker-run" do
     user "root"
     code <<-EOH
-      docker run #{dockerenvs} -h #{hostname} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port]}:#{deploy[:environment_variables][:container_port]} --name #{deploy[:application]} -d #{deploy[:environment_variables][:registry_image]}:#{deploy[:environment_variables][:registry_tag]}
+      docker run #{dockerenvs} -h #{hostname} -v /etc/nginx/certs --name #{deploy[:application]} -d #{deploy[:environment_variables][:registry_image]}:#{deploy[:environment_variables][:registry_tag]}
     EOH
   end
   Chef::Log.info('docker-run stop')
