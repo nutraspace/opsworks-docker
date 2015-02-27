@@ -62,7 +62,7 @@ node[:deploy].each do |application, deploy|
   deploy[:environment_variables].each do |key, value|
     dockerenvs=dockerenvs+" -e "+key+"="+value unless key == "registry_password"
   end
-  dockerenvs=dockerenvs+" -e CLUSTER_ENDPOINT_URL=http://#{node[:opsworks][:instance][:private_ip]}:8080
+  dockerenvs=dockerenvs+" -e CLUSTER_ENDPOINT_URL=http://#{node[:opsworks][:instance][:private_ip]}:8080"
   Chef::Log.info("ENVs: #{dockerenvs}")
 
   hostname = "#{node[:opsworks][:stack][:name]}-#{node[:opsworks][:instance][:hostname]}"
