@@ -22,7 +22,7 @@ node[:deploy].each do |application, deploy|
             then
                 docker rm -f nginx-proxy
             fi
-            if docker images | grep jwilder/nginx-proxy
+            if docker images | grep jwilder/nginx-proxy;
             then
                 docker rmi -f $(docker images | grep -m 1 jwilder/nginx-proxy} | awk {'print $3'})
             fi
@@ -32,7 +32,7 @@ node[:deploy].each do |application, deploy|
     bash "nginx-proxy-run" do
         user "root"
         code <<-EOH
-            docker run -d -p 80:80 -p 443:443 --volumes-from --name nginx-proxy #{deploy[:application]} -v /var/run/docker.sock:/tmp/docker.sock jwilder/nginx-proxy
+            docker run -d -p 80:80 -p 443:443 --volumes-from #{deploy[:application]} --name nginx-proxy -v /var/run/docker.sock:/tmp/docker.sock jwilder/nginx-proxy
         EOH
     end
 end
