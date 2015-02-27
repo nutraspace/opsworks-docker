@@ -23,7 +23,9 @@ node[:deploy].each do |application, deploy|
                 docker rm -f nginx-proxy
             fi
             if docker images | grep jwilder/nginx-proxy
-            then docker rmi -f $(docker images | grep -m 1 jwilder/nginx-proxy} | awk {'print $3'})
+            then
+                docker rmi -f $(docker images | grep -m 1 jwilder/nginx-proxy} | awk {'print $3'})
+            fi
         EOH
     end
 
