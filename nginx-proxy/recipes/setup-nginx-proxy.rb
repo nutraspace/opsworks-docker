@@ -7,10 +7,30 @@ node[:deploy].each do |application, deploy|
         next
     end
 
+    Chef::Log.info("Cleanup nginx-proxy docker")
+
+    bash "nginx-cleanup" do
+        user "root"
+        code <<-EOH
+            if docker ps | grep nginx-proxy;
+            then
+                docker stop nginx-proxy
+                sleep 3
+                docker rm -f nginx-proxy
+            fi
+            if docker ps -a | grep nginx-proxy;
+            then
+                docker rm -f nginx-proxy
+            fi
+            if docker images | grep jwilder/nginx-proxy
+            then docker rmi -f $(docker images | grep -m 1 jwilder/nginx-proxy} | awk {'print $3'})
+        EOH
+    end
+
     bash "nginx-proxy-run" do
         user "root"
         code <<-EOH
-            docker run -d -p 80:80 -p 443:443 --volumes-from #{deploy[:application]} -v /var/run/docker.sock:/tmp/docker.sock jwilder/nginx-proxy
+            docker run -d -p 80:80 -p 443:443 --volumes-from --name nginx-proxy #{deploy[:application]} -v /var/run/docker.sock:/tmp/docker.sock jwilder/nginx-proxy
         EOH
     end
 end
