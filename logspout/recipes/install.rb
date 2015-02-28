@@ -3,7 +3,7 @@ Chef::Log.info("Setting up papertrail")
 node[:deploy].each do |application, deploy|
 
     if node[:opsworks][:instance][:layers].first != deploy[:environment_variables][:layer]
-        Chef::Log.warn("Skipping the deployment of this nginx because it does not match the app layer")
+        Chef::Log.warn("Skipping the deployment of this papertrail because it does not match the app layer")
         next
     end
 

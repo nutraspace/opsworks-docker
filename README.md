@@ -17,6 +17,8 @@ Instructions
     * Recipes
         * Setup: owdocker::install
         * Deploy: owdocker::docker-image-deploy
+        * Deploy: nginx-proxy::setup-nginx-proxy
+        * Deploy: logspout::install
 3. Add an App
     * Type: Other
     * Repository type: Other
@@ -29,3 +31,4 @@ Instructions
         * registry_url: OPTIONAL url to a non hub.docker ala quay.io
         * registry_username: OPTIONAL username to login to the registry
         * registry_password: OPTIONAL password to login to the registry
+        * 
