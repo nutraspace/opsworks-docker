@@ -33,7 +33,7 @@ node[:deploy].each do |application, deploy|
     bash "docker-logspout" do
         user "root"
         code <<-EOH
-            docker run -d -h #{hostname} --name logspout -v /var/run/docker.sock:/tmp/docker.sock progrium/logspout syslog://#{deploy[:environment_variables][:PAPERTRAIL_URL]}:#{deploy[:environment_variables][:PAPERTRAIL_PORT]}
+            docker run -d --restart=always -h #{hostname} --name logspout -v /var/run/docker.sock:/tmp/docker.sock progrium/logspout syslog://#{deploy[:environment_variables][:PAPERTRAIL_URL]}:#{deploy[:environment_variables][:PAPERTRAIL_PORT]}
         EOH
     end
     Chef::Log.info('docker-logspout stop')
