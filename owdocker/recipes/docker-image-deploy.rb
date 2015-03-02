@@ -72,7 +72,7 @@ node[:deploy].each do |application, deploy|
   bash "docker-run" do
     user "root"
     code <<-EOH
-      docker run #{dockerenvs} -h #{hostname} -v /etc/nginx/certs -p #{node[:opsworks][:instance][:private_ip]}:8080:80 --name #{deploy[:application]} -d #{deploy[:environment_variables][:registry_image]}:#{deploy[:environment_variables][:registry_tag]}
+      docker run #{dockerenvs} --restart=always -h #{hostname} -v /etc/nginx/certs -p #{node[:opsworks][:instance][:private_ip]}:8080:80 --name #{deploy[:application]} -d #{deploy[:environment_variables][:registry_image]}:#{deploy[:environment_variables][:registry_tag]}
     EOH
   end
   Chef::Log.info('docker-run stop')
