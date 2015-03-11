@@ -22,9 +22,9 @@ node[:deploy].each do |application, deploy|
             then
                 docker rm -f logspout
             fi
-            if docker images | grep progrium/logspout;
+            if docker images | grep gliberlabs/logspout;
             then
-                docker rmi -f $(docker images | grep -m 1 progrium/logspout | awk {'print $3'})
+                docker rmi -f $(docker images | grep -m 1 gliberlabs/logspout | awk {'print $3'})
             fi
         EOH
     end
@@ -33,7 +33,7 @@ node[:deploy].each do |application, deploy|
     bash "docker-logspout" do
         user "root"
         code <<-EOH
-            docker run -d --restart=always -h #{hostname} --name logspout -v /var/run/docker.sock:/tmp/docker.sock progrium/logspout syslog://#{deploy[:environment_variables][:PAPERTRAIL_URL]}:#{deploy[:environment_variables][:PAPERTRAIL_PORT]}
+            docker run -d --restart=always -h #{hostname} --name logspout -v /var/run/docker.sock:/tmp/docker.sock gliderlabs/logspout syslog://#{deploy[:environment_variables][:PAPERTRAIL_URL]}:#{deploy[:environment_variables][:PAPERTRAIL_PORT]}
         EOH
     end
     Chef::Log.info('docker-logspout stop')
