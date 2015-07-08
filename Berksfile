@@ -1,4 +1,4 @@
 source "https://supermarket.getchef.com"
 
 cookbook "apt"
-cookbook 'docker', '~> 0.36.0'
+cookbook 'docker', '~> 0.40.0'
