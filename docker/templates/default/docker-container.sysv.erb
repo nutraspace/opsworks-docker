@@ -22,7 +22,7 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-exec="<%= node['docker']['install_dir'] %>/docker"
+exec="<%= Docker::Helpers.executable(node) %>"
 prog="<%= @service_name %>"
 pidfile="/var/run/$prog.pid"
 lockfile="/var/lock/subsys/$prog"
@@ -71,7 +71,7 @@ force_reload() {
 }
 
 status() {
-    $exec ps -a -notrunc | grep $prog | grep -qc "Up"
+    $exec ps -a | grep $prog | grep -qc "Up"
 }
 
 case "$1" in

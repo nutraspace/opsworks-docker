@@ -1,13 +1,18 @@
 [Unit]
-Description=Docker Daemon Socket
+Description=Docker Socket for the API
+PartOf=docker.service
 
 [Socket]
-<% if node['docker']['bind_socket'] -%>
-ListenStream=<%= node['docker']['bind_socket'].gsub(/^unix:\/\//,'') %>
+<% Array(node['docker']['host']).each do |socket| -%>
+<% next if socket.match(/^unix:/) -%>
+<% next if socket.match(/^tcp:/) -%>
+<% next if socket.match(/^fd:/) -%>
+ListenStream=<%= socket %>
 <% end -%>
-<% if node['docker']['bind_uri'] -%>
-ListenStream=<%= node['docker']['bind_uri'].gsub(/^tcp:\/\//,'') %>
-<% end -%>
+ListenStream=/var/run/docker.sock
+SocketMode=0660
+SocketUser=root
+SocketGroup=<%= node['docker']['group'] || 'root' %>
 
 [Install]
 WantedBy=sockets.target
