@@ -1,3 +1,6 @@
+require 'chef/mixin/shell_out'
+include Chef::Mixin::ShellOut
+
 # Docker module
 module Docker
   # Docker::Helpers module
@@ -228,7 +231,7 @@ EOM
     def execute_cmd(cmd, timeout = new_resource.cmd_timeout)
       Chef::Log.debug('Executing: ' + cmd)
       begin
-        shell_out(cmd, timeout: timeout)
+        shell_out(cmd, :timeout => timeout)
       rescue Mixlib::ShellOut::CommandTimeout
         raise CommandTimeout, command_timeout_error_message(cmd)
       end

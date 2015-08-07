@@ -214,10 +214,10 @@ def get_ranges(header)
   names_index = header.index('NAMES')
 
   ranges = {
-    id: [container_id_index, image_index],
-    image: [image_index, command_index],
-    command: [command_index, created_index],
-    created: [created_index, status_index]
+    :id => [container_id_index, image_index],
+    :image => [image_index, command_index],
+    :command => [command_index, created_index],
+    :created => [created_index, status_index]
   }
   if ports_index > 0
     ranges[:status] = [status_index, ports_index]
@@ -230,7 +230,7 @@ def get_ranges(header)
 end
 
 #
-# Get a list of all docker containers by parsing the output of `docker ps -a --no-trunc`.
+# Get a list of all docker containers by parsing the output of `docker ps -a -notrunc`.
 #
 # Uses `get_ranges` to determine where column data is within each row. Then, for each line after
 # the header, a hash is build up with the values for each of the columns. A special 'line' entry
@@ -352,7 +352,7 @@ end
 
 def run
   run_args = cli_args(run_cli_args)
-  dr = docker_cmd!("run #{run_args} #{new_resource.image}:#{new_resource.tag} #{new_resource.command}")
+  dr = docker_cmd!("run #{run_args} #{new_resource.image} #{new_resource.command}")
   dr.error!
   new_resource.id(dr.stdout.chomp)
   service_run if service?
@@ -389,7 +389,6 @@ def run_cli_args
     'rm' => new_resource.remove_automatically,
     'restart' => new_resource.restart,
     'tty' => new_resource.tty,
-    'ulimit' => Array(new_resource.ulimit),
     'user' => new_resource.user,
     'volume' => Array(new_resource.volume),
     'volumes-from' => new_resource.volumes_from,
@@ -413,7 +412,7 @@ def service_init
     runit_service service_name do
       run_template_name 'docker-container'
       finish_script_template_name 'docker-container'
-      supports restart: true, reload: true, status: true, stop: true
+      supports :restart => true, :reload => true, :status => true, :stop => true
       action :nothing
       finish true
       restart_on_update false
@@ -426,7 +425,7 @@ def service_init
       when 'upstart'
         provider Chef::Provider::Service::Upstart
       end
-      supports restart: true, reload: true, status: true
+      supports :restart => true, :reload => true, :status => true
       action :nothing
     end
   end
@@ -476,8 +475,8 @@ def service_create_systemd
     owner 'root'
     group 'root'
     variables(
-      service_name: service_name,
-      sockets: sockets
+      :service_name => service_name,
+      :sockets => sockets
     )
     not_if { port.empty? }
     action :nothing
@@ -490,8 +489,8 @@ def service_create_systemd
     owner 'root'
     group 'root'
     variables(
-      cmd_timeout: new_resource.cmd_timeout,
-      service_name: service_name
+      :cmd_timeout => new_resource.cmd_timeout,
+      :service_name => service_name
     )
     action :nothing
   end.run_action(:create)
@@ -505,8 +504,8 @@ def service_create_sysv
     owner 'root'
     group 'root'
     variables(
-      cmd_timeout: new_resource.cmd_timeout,
-      service_name: service_name
+      :cmd_timeout => new_resource.cmd_timeout,
+      :service_name => service_name
     )
     action :nothing
   end.run_action(:create)
@@ -522,7 +521,7 @@ def service_create_upstart
   # The upstart init script requires inotifywait, which is in inotify-tools
   # For clarity, install the package here but do it only once (no CHEF-3694).
   begin
-    run_context.resource_collection.find(package: 'inotify-tools')
+    run_context.resource_collection.find(:package => 'inotify-tools')
     # If we get here then we already installed the resource the first time.
   rescue Chef::Exceptions::ResourceNotFound
     package('inotify-tools') do
@@ -537,8 +536,8 @@ def service_create_upstart
     owner 'root'
     group 'root'
     variables(
-      cmd_timeout: new_resource.cmd_timeout,
-      service_name: service_name
+      :cmd_timeout => new_resource.cmd_timeout,
+      :service_name => service_name
     )
     action :nothing
   end.run_action(:create)

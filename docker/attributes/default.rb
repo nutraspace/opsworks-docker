@@ -1,3 +1,5 @@
+include_attribute 'golang'
+
 # Installation/System attributes
 
 default['docker']['arch'] =
@@ -20,7 +22,6 @@ default['docker']['init_type'] = value_for_platform(
     'default' => 'systemd'
   },
   %w(ubuntu) => {
-    %w(15.04) => 'systemd',
     'default' => 'upstart'
   },
   'default' => 'upstart'
@@ -98,7 +99,7 @@ default['docker']['package']['name'] = value_for_platform(
     'default' => 'homebrew/binary/docker'
   },
   'ubuntu' => {
-    %w(12.04 12.10 13.04 13.10 14.04 14.10 15.04) => 'lxc-docker',
+    %w(12.04 12.10 13.04 13.10 14.04) => 'lxc-docker',
     'default' => 'docker.io'
   },
   'default' => nil
@@ -108,7 +109,7 @@ default['docker']['package']['repo_url'] = value_for_platform(
     'default' => 'https://get.docker.io/ubuntu'
   },
   'ubuntu' => {
-    %w(12.04 12.10 13.04 13.10 14.04 14.10 15.04) => 'https://get.docker.io/ubuntu',
+    %w(12.04 12.10 13.04 13.10 14.04) => 'https://get.docker.io/ubuntu',
     'default' => nil
   },
   'default' => nil
@@ -167,15 +168,6 @@ default['docker']['registry-mirror'] = nil
 default['docker']['selinux_enabled'] = nil
 default['docker']['storage_driver'] = nil
 default['docker']['storage_opt'] = nil
-
-# the systemd system dir is different in newer Ubuntu (and debian?)
-default['docker']['systemd_system_dir'] = value_for_platform(
-  'ubuntu' => {
-    %w(15.04) => '/lib/systemd/system',
-    'default' => '/usr/lib/systemd/system'
-  },
-  'default' => '/usr/lib/systemd/system'
-)
 
 # DEPRECATED: will be removed in chef-docker 1.0
 default['docker']['storage_type'] = node['docker']['storage_driver']

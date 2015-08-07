@@ -15,7 +15,9 @@ normal exit 0 CONT
 
 respawn
 
-script
+exec <%= Docker::Helpers.executable(node) %> wait <%= @service_name %>
+
+pre-start script
   # Wait for docker to finish starting up first.
   <% # DEPRECATED: bind_socket usage -%>
   <% if node['docker']['bind_socket'] -%>
@@ -29,7 +31,7 @@ script
     inotifywait -t 2 -e create $(dirname $FILE)
   done
   <% end -%>
-  <%= Docker::Helpers.executable(node) %> start -a <%= @service_name %>
+  <%= Docker::Helpers.executable(node) %> start <%= @service_name %> || true
 end script
 
 pre-stop script

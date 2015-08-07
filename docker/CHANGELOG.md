@@ -1,45 +1,17 @@
+## 1.0.0 (unreleased)
 
-v1.0.0 (unreleased)
---------------------
-* Work in progress... moving from "classic" recipe and attribute based
-  cookbook to resource based cookbook  
-* TODO docker_image and docker_container resources
+* Changed default Docker port to IANA assigned 2375
 
-v0.40.3 (2015-07-14)
---------------------
-- remove --no-trunc from docker container status in sysvinit script
-- #334 - docker_container tag property (issue 320)
-- #331 - docker_container ulimit property
-- #328 - Upstart job respawn status detection
-- #326 - Upstart job restart behavior fix sysvinit script examples
-- #236 - README#324 - Reference DOCKER_OPTS Amazon Linux#325
+Attribute deprecations:
 
-v0.40.2 (2015-07-14)
---------------------
-- Support for older Chef versions
+* storage_type attribute renamed to storage_driver
+* virtualization_type attribute renamed to exec_driver
+* image LWRP dockerfile, image_url, and path attributes replaced with source attribute
+* container LWRP Fixnum port attribute: use full String notation from Docker documentation in port attribute instead
+* container LWRP public_port attribute: use port attribute instead
+* container LWRP networking attribute: use net attribute instead
 
-v0.40.1 (2015-07-08)
---------------------
-- Changing host property to kind_of Array
-
-v0.40.0  (2015-06-29)
----------------------
-Important changes with this release:
-
-* MAJOR INTERFACE CHANGE
-* Recipes replaced with docker_service resource* 
-* Removing a ton of dependencies
-* Storage backends, kernel module loading, etc should now be handled externally
-* Updating for Docker 1.6.2
-* Preferring binary install method to OS packages
-
-IMPORTANT
-* attributes/ will be removed in the next release.
-* most are currently non-functional
-* All options will be driven through resource properties
-
-v0.37.0
--------
+## 0.37.0
 
 Please note some important changes with this release:
 
